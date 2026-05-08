@@ -1,0 +1,69 @@
+{% extends "admin/base_adm.html" %}
+
+{% block title %}Nova Estante - SuaEstante{% endblock %}
+{% block breadcrumb %}Minhas Estantes / Criar{% endblock %}
+
+{% block dashboard_content %}
+<div class="max-w-2xl mx-auto">
+    <a href="{{ url_for('user.home') }}" class="inline-flex items-center text-sm text-gray-500 hover:text-primary transition-colors mb-6 group">
+        <svg class="w-4 h-4 mr-2 transform group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+        </svg>
+        Voltar para a biblioteca
+    </a>
+
+    <div class="bg-white rounded-3xl border border-gray-100 shadow-xl overflow-hidden">
+        <div class="bg-primary p-8 text-white text-center relative overflow-hidden">
+            <div class="relative z-10">
+                <div class="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center mx-auto mb-4 backdrop-blur-sm">
+                    <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+                    </svg>
+                </div>
+                <h1 class="text-2xl font-bold">Criar Nova Estante</h1>
+                <p class="text-blue-100 text-sm mt-1">Dê um nome para organizar sua coleção de livros.</p>
+            </div>
+            
+            <div class="absolute top-0 right-0 -mr-16 -mt-16 w-48 h-48 bg-white/10 rounded-full"></div>
+            <div class="absolute bottom-0 left-0 -ml-8 -mb-8 w-24 h-24 bg-black/10 rounded-full"></div>
+        </div>
+
+        <form action="{{ url_for('user.nova_estante') }}" enctype="multipart/form-data" method="POST" class="p-8 space-y-6">
+            <div class="space-y-2">
+                <label for="nome" class="text-sm font-bold text-secondary ml-1">Nome da Estante</label>
+                <input type="text" id="nome" name="nome" required autofocus
+                       placeholder="Ex: Favoritos, Para Ler em 2024, Ficção Científica..."
+                       class="w-full px-5 py-4 bg-gray-50 border border-gray-100 rounded-2xl text-secondary focus:outline-none focus:ring-2 focus:ring-primary focus:bg-white transition-all">
+                <p class="text-xs text-gray-400 ml-1 italic">Dica: Escolha um nome que ajude você a categorizar suas leituras.</p>
+            </div>
+
+            <div class="space-y-2">
+                <label for="estado" class="text-sm font-bold text-secondary ml-1">Status</label>
+                <input type="text" id="estado" name="estado" required autofocus
+                       placeholder="Ex: Favoritos, Para Ler em 2024, Ficção Científica..."
+                       class="w-full px-5 py-4 bg-gray-50 border border-gray-100 rounded-2xl text-secondary focus:outline-none focus:ring-2 focus:ring-primary focus:bg-white transition-all">
+                <p class="text-xs text-gray-400 ml-1 italic">Dica: Ativo ou Inativo.</p>
+            </div>
+
+            <div class="space-y-2">
+                <label for="capa" class="text-sm font-bold text-secondary ml-1">Capa da Estante</label>
+                <!-- Corrigido name para 'capa' e accept para formatos de imagem -->
+                <input type="file" id="capa" name="capa" accept="image/png, image/jpeg, image/jpg" required
+                        class="w-full px-5 py-4 bg-gray-50 border border-gray-100 rounded-2xl text-secondary focus:outline-none focus:ring-2 focus:ring-primary focus:bg-white transition-all 
+                                file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-primary hover:file:bg-blue-100">
+                <p class="text-xs text-gray-400 ml-1 italic">Dica: Escolha uma imagem que represente sua estante de livros.</p>
+
+            </div>
+
+            <div class="pt-4 flex flex-col gap-3">
+                <button type="submit" class="w-full py-4 bg-primary hover:bg-blue-600 text-white font-bold rounded-2xl shadow-lg shadow-blue-100 transition-all transform active:scale-95">
+                    Confirmar e Criar
+                </button>
+                <a href="{{ url_for('user.home') }}" class="w-full py-4 bg-gray-50 text-gray-500 font-bold rounded-2xl text-center hover:bg-gray-100 transition-colors">
+                    Desistir
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

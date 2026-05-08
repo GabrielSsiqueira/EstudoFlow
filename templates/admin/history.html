@@ -1,0 +1,87 @@
+{% extends "admin/base_adm.html" %}
+
+{% block title %}Histórico - SuaEstante{% endblock %}
+{% block breadcrumb %}Admin / Histórico de Atividades{% endblock %}
+
+{% block dashboard_content %}
+<div class="space-y-6">
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+            <h1 class="text-2xl font-bold text-secondary">Histórico do Sistema</h1>
+            <p class="text-sm text-gray-500">Acompanhe as últimas interações dos usuários com o acervo.</p>
+        </div>
+        
+        <div class="flex items-center gap-2">
+            <button class="bg-white border border-gray-200 text-gray-600 hover:bg-gray-50 px-4 py-2 rounded-xl font-bold text-sm transition flex items-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                Exportar Log
+            </button>
+        </div>
+    </div>
+
+    <div class="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="bg-gray-50 border-b border-gray-100">
+                        <th class="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-widest">Data e Hora</th>
+                        <th class="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-widest">Usuário</th>
+                        <th class="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-widest">Ação / Evento</th>
+                        <th class="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-widest">Objeto Relacionado</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-100">
+                    {% for log in history %}
+                    <tr class="hover:bg-gray-50/50 transition-colors">
+                        <td class="px-6 py-4">
+                            <div class="flex flex-col">
+                                <span class="text-sm font-bold text-secondary">{{ log.timestamp.strftime('%d/%m/%Y') }}</span>
+                                <span class="text-xs text-gray-400">{{ log.timestamp.strftime('%H:%M:%S') }}</span>
+                            </div>
+                        </td>
+                        
+                        <td class="px-6 py-4">
+                            <div class="flex items-center gap-2">
+                                <div class="w-7 h-7 rounded-full bg-gray-100 flex items-center justify-center text-[10px] font-bold text-gray-500 border border-gray-200">
+                                    {{ log.user.name[0] | upper }}
+                                </div>
+                                <span class="text-xs font-medium text-gray-700">{{ log.user.name }}</span>
+                            </div>
+                        </td>
+
+                        <td class="px-6 py-4">
+                            {% if 'deletou' in log.action.lower() or 'removeu' in log.action.lower() %}
+                                <span class="px-2.5 py-1 text-[10px] font-black uppercase bg-red-50 text-red-600 rounded-md border border-red-100">
+                                    {{ log.action }}
+                                </span>
+                            {% elif 'criou' in log.action.lower() or 'adicionou' in log.action.lower() %}
+                                <span class="px-2.5 py-1 text-[10px] font-black uppercase bg-emerald-50 text-emerald-600 rounded-md border border-emerald-100">
+                                    {{ log.action }}
+                                </span>
+                            {% else %}
+                                <span class="px-2.5 py-1 text-[10px] font-black uppercase bg-blue-50 text-blue-600 rounded-md border border-blue-100">
+                                    {{ log.action }}
+                                </span>
+                            {% endif %}
+                        </td>
+
+                        <td class="px-6 py-4">
+                            <div class="flex items-center gap-2 text-xs text-gray-500 italic">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                {{ log.object_name }}
+                            </div>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="4" class="px-6 py-20 text-center">
+                            <p class="text-gray-400 italic font-medium">Nenhuma atividade registrada no histórico.</p>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

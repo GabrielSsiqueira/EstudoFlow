@@ -1,0 +1,138 @@
+{% extends "admin/base_adm.html" %}
+
+{% block dashboard_content %}
+<div class="max-w-4xl mx-auto pb-20">
+    
+    <!-- Cabeçalho de Boas-vindas -->
+    <div class="mb-8">
+        <h1 class="text-3xl font-bold text-dark">Meu Perfil</h1>
+        <p class="text-gray-400">Gerencie suas informações e veja seu progresso.</p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        
+        <!-- Coluna da Esquerda: Cards de Stats -->
+        <div class="md:col-span-1 space-y-6">
+            <!-- Card Avatar -->
+            <div class="bg-[#1e1e1e] rounded-3xl p-6 border border-white/5 text-center">
+                <div class="w-24 h-24 bg-gradient-to-tr from-primary to-blue-600 rounded-full mx-auto flex items-center justify-center text-3xl font-bold text-white mb-4 shadow-lg shadow-primary/20">
+                    {{ current_user.name  }}
+                </div>
+                <h2 class="text-xl font-bold text-white">{{ current_user.name }}</h2>
+                <p class="text-sm text-gray-500">{{ current_user.email }}</p>
+                <span class="inline-block mt-4 px-4 py-1 bg-primary/10 text-primary text-xs font-bold rounded-full border border-primary/20">
+                    Membro desde {{ current_user.created_at.strftime('%Y') if user.created_at else '2024' }}
+                </span>
+            </div>
+
+            <!-- Stats -->
+            <div class="bg-[#1e1e1e] rounded-3xl p-6 border border-white/5 space-y-4">
+                <div class="flex justify-between items-center">
+                    <span class="text-gray-400 text-sm">Livros</span>
+                    <span class="text-white font-bold">{{ total_livros }}</span>
+                </div>
+                <div class="h-[1px] bg-white/5"></div>
+                <div class="flex justify-between items-center">
+                    <span class="text-gray-400 text-sm">Estantes</span>
+                    <span class="text-white font-bold">{{ total_estantes }}</span>
+                </div>
+                <div class="h-[1px] bg-white/5"></div>
+                <div class="flex justify-between items-center">
+                    <span class="text-gray-400 text-sm">Favoritos</span>
+                    <span class="text-primary font-bold">{{ total_favoritos }}</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Coluna da Direita: Formulário de Edição -->
+        <div class="md:col-span-2">
+            <div class="bg-[#1e1e1e] rounded-3xl p-8 border border-white/5">
+                <h3 class="text-lg font-bold text-white mb-6 flex items-center gap-2">
+                    <i class="fas fa-user-edit text-primary"></i> Editar Informações
+                </h3>
+
+                <form action="{{ url_for('user.atualizar_perfil') }}" method="POST" enctype="multipart/form-data" class="space-y-6">
+    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <!-- Coluna da Esquerda: Preview e Stats -->
+                        <div class="md:col-span-1 space-y-6">
+                            <div class="bg-[#1e1e1e] rounded-3xl p-6 border border-white/5 text-center">
+                                <!-- Foto de Perfil com Preview -->
+                                <div class="relative group w-32 h-32 mx-auto mb-4">
+                                    
+                                    <img id="avatar-preview" 
+                                        src="{{ url_for('static', filename='uploads/user/' + (current_user.photo or 'default_user.png')) }}" 
+                                        class="w-full h-full object-cover rounded-full border-4 border-primary/20 shadow-xl">
+                                    
+                                    <label for="foto" class="absolute inset-0 flex items-center justify-center bg-black/50 rounded-full opacity-0 group-hover:opacity-100 cursor-pointer transition-opacity">
+                                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path><path d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                                    </label>
+                                    <input type="file" name="foto" id="foto" class="hidden" accept="image/*" onchange="previewImage(this)">
+                                </div>
+
+                                <h2 class="text-xl font-bold text-white">{{ current_user.name }}</h2>
+                                <p class="text-[10px] text-gray-500 uppercase tracking-widest">Clique na foto para alterar</p>
+                            </div>
+                            
+                            <!-- (Mantenha o card de stats aqui abaixo) -->
+                        </div>
+
+                        <div class="space-y-2">
+                            <label class="text-xs font-bold text-gray-500 uppercase ml-1">Nome Completo</label>
+                            <input type="text" name="nome" value="{{ user.name }}" required
+                                   class="w-full bg-black/20 border border-white/10 rounded-2xl px-4 py-3 text-white focus:outline-none focus:border-primary transition-all">
+                        </div>
+
+                        <!-- Email -->
+                        <div class="space-y-2">
+                            <label class="text-xs font-bold text-gray-500 uppercase ml-1">E-mail</label>
+                            <input type="email" name="email" value="{{ user.email }}" required
+                                   class="w-full bg-black/20 border border-white/10 rounded-2xl px-4 py-3 text-white focus:outline-none focus:border-primary transition-all">
+                        </div>
+
+                        <!-- Senha -->
+                        <div class="space-y-2">
+                            <label class="text-xs font-bold text-gray-500 uppercase ml-1">Nova Senha (deixe em branco para manter)</label>
+                            <input type="password" name="senha" placeholder="••••••••"
+                                   class="w-full bg-black/20 border border-white/10 rounded-2xl px-4 py-3 text-white focus:outline-none focus:border-primary transition-all">
+                        </div>
+
+                        <!-- Coluna da Direita: Inputs (Mantenha os inputs de nome, email e senha aqui) -->
+                    </div>
+
+                    <div class="pt-4 flex gap-4">
+                        <button type="submit" class="flex-1 bg-primary hover:bg-blue-600 text-black font-bold py-4 rounded-2xl transition-all shadow-lg shadow-primary/20">
+                            Salvar Alterações
+                        </button>
+                        <a href="{{ url_for('auth.logout') }}" class="px-6 bg-red-500/10 hover:bg-red-500/20 text-red-500 font-bold py-4 rounded-2xl transition-all border border-red-500/20 flex items-center justify-center">
+                            Sair
+                        </a>
+                    </div>
+                </form>
+
+            <!-- Card de Segurança/Aviso -->
+            <div class="mt-6 p-4 bg-yellow-500/10 border border-yellow-500/20 rounded-2xl flex gap-4 items-start">
+                <i class="fas fa-shield-alt text-yellow-500 mt-1"></i>
+                <p class="text-xs text-yellow-500/80">
+                    <strong>Privacidade:</strong> Seus dados de leitura e arquivos PDF são armazenados de forma privada e apenas você tem acesso a eles através da sua conta.
+                </p>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script>
+function previewImage(input) {
+    if (input.files && input.files[0]) {
+        var reader = new FileReader();
+        reader.onload = function(e) {
+            document.getElementById('avatar-preview').src = e.target.result;
+        }
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+</script>
+{% endblock %}

@@ -1,0 +1,87 @@
+{% extends "admin/base_adm.html" %}
+
+{% block title %}Estantes - SuaEstante{% endblock %}
+{% block breadcrumb %}Admin / Estantes{% endblock %}
+
+{% block dashboard_content %}
+<div class="space-y-6">
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+            <h1 class="text-2xl font-bold text-secondary">Estantes e Coleções</h1>
+            <p class="text-sm text-gray-500">Gerencie as organizações de livros dos usuários.</p>
+        </div>
+        
+        <button class="bg-primary hover:bg-blue-600 text-white px-4 py-2 rounded-xl font-bold text-sm shadow-sm transition flex items-center gap-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+            Nova Estante
+        </button>
+    </div>
+
+    <div class="flex gap-2 overflow-x-auto pb-2">
+        <span class="px-4 py-1.5 bg-primary text-white text-xs font-bold rounded-full cursor-pointer shadow-sm">Todas</span>
+        <span class="px-4 py-1.5 bg-white border border-gray-200 text-gray-500 text-xs font-bold rounded-full cursor-pointer hover:bg-gray-50 transition">Públicas</span>
+        <span class="px-4 py-1.5 bg-white border border-gray-200 text-gray-500 text-xs font-bold rounded-full cursor-pointer hover:bg-gray-50 transition">Privadas</span>
+    </div>
+
+    <div class="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="bg-gray-50 border-b border-gray-100">
+                        <th class="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-widest">Nome da Estante</th>
+                        <th class="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-widest">Proprietário</th>
+                        <th class="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-widest">Qtd. Livros</th>
+                        <th class="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-widest">Privacidade</th>
+                        <th class="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-widest text-right">Ações</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-100">
+                    {% for shelf in shelves %}
+                    <tr class="hover:bg-gray-50/50 transition-colors group">
+                        <td class="px-6 py-4">
+                            <div class="flex items-center gap-3">
+                                <div class="p-2 bg-amber-50 text-amber-600 rounded-lg">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                                </div>
+                                <span class="text-sm font-bold text-secondary">{{ shelf.name }}</span>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4">
+                            <span class="text-sm text-gray-600">{{ shelf.user.name }}</span>
+                        </td>
+                        <td class="px-6 py-4">
+                            <span class="text-xs font-bold bg-gray-100 text-gray-500 px-2 py-1 rounded-md">
+                                {{ shelf.books|length }} itens
+                            </span>
+                        </td>
+                        <td class="px-6 py-4">
+                            {% if shelf.is_public %}
+                                <span class="text-[10px] font-black uppercase tracking-tighter text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-100">Pública</span>
+                            {% else %}
+                                <span class="text-[10px] font-black uppercase tracking-tighter text-gray-400 bg-gray-50 px-2 py-0.5 rounded border border-gray-100">Privada</span>
+                            {% endif %}
+                        </td>
+                        <td class="px-6 py-4 text-right">
+                            <div class="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                <button class="p-2 text-gray-400 hover:text-primary hover:bg-blue-50 rounded-lg transition-all">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+                                </button>
+                                <button class="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="5" class="px-6 py-20 text-center">
+                            <p class="text-gray-400 italic">Nenhuma estante criada até o momento.</p>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,75 @@
+{% extends "admin/base_adm.html" %}
+
+{% block title %}Caderno: {{ livro.titulo }}{% endblock %}
+{% block breadcrumb %}Caderno / Insights{% endblock %}
+
+{% block dashboard_content %}
+<div class="p-8 max-w-6xl mx-auto">
+    <!-- Cabeçalho -->
+    <div class="flex flex-col md:flex-row md:items-center justify-between mb-10 gap-4">
+        <div>
+            <h1 class="text-3xl font-extrabold text-dark tracking-tight">{{ livro.titulo }}</h1>
+            <p class="text-gray-400 mt-1 flex items-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+                Gestão de Conhecimento
+            </p>
+        </div>
+        <a href="{{ url_for('user.ler_livro', id=livro.id) }}" class="inline-flex items-center justify-center px-6 py-3 bg-primary hover:bg-blue-600 text-white rounded-xl font-bold transition-all shadow-lg shadow-blue-500/20">
+            Retomar Leitura
+        </a>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        
+        <!-- SEÇÃO: MINHAS NOTAS (Tabela Anotacao) -->
+        <div class="space-y-6">
+            <h2 class="text-lg font-bold text-dark flex items-center gap-2 mb-4">
+                <span class="w-2 h-6 bg-yellow-500 rounded-full"></span>
+                Meus Insights
+            </h2>
+            
+            {% for a in anotacoes %}
+            <div class="bg-[#252525] rounded-2xl p-6 border border-white/5 hover:border-yellow-500/30 transition-colors">
+                <div class="flex justify-between items-start mb-4">
+                    <span class="text-[10px] text-gray-500 font-mono">{{ a.created_at.strftime('%d/%m/%Y %H:%M') }}</span>
+                    <button class="text-gray-600 hover:text-red-500 transition-colors">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                    </button>
+                </div>
+                <p class="text-gray-300 leading-relaxed">{{ a.conteudo }}</p>
+            </div>
+            {% else %}
+            <p class="text-gray-600 italic text-sm">Nenhuma nota pessoal escrita ainda.</p>
+            {% endfor %}
+        </div>
+
+        <!-- SEÇÃO: TRECHOS DESTACADOS (Tabela Marcacao) -->
+        <div class="space-y-6">
+            <h2 class="text-lg font-bold text-dark flex items-center gap-2 mb-4">
+                <span class="w-2 h-6 bg-blue-500 rounded-full"></span>
+                Citações do Livro
+            </h2>
+
+            {% for m in marcacoes %}
+            <div class="bg-[#252525] rounded-2xl p-6 border-l-4 border-white/5 hover:bg-[#2a2a2a] transition-all relative overflow-hidden" style="border-left-color: {{ m.cor_destaque }}">
+                <div class="absolute top-0 right-0 p-2 opacity-10">
+                    <svg class="w-12 h-12 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M14.017 21L14.017 18C14.017 16.8954 14.9125 16 16.017 16H19.017C19.5693 16 20.017 15.5523 20.017 15V9C20.017 8.44772 19.5693 8 19.017 8H15.017C14.4647 8 14.017 8.44772 14.017 9V11M14.017 21H17.017C18.1216 21 19.017 20.1046 19.017 19V18M10.017 21L10.017 18C10.017 16.8954 9.12157 16 8.017 16H5.017C4.46472 16 4.017 15.5523 4.017 15V9C4.017 8.44772 4.46472 8 5.017 8H9.017C9.56928 8 10.017 8.44772 10.017 9V11M10.017 21H7.017C5.91243 21 5.017 20.1046 5.017 19V18"></path></svg>
+                </div>
+                <div class="flex items-center gap-2 mb-3">
+                    <span class="px-2 py-1 bg-white/5 rounded text-[10px] font-bold text-blue-400">PÁG. {{ m.num_pagina }}</span>
+                </div>
+                <p class="text-gray-400 italic text-sm leading-relaxed mb-4 relative z-10">
+                    "{{ m.texto_extraido }}"
+                </p>
+                <a href="{{ url_for('user.ler_livro', id=livro.id, page=m.num_pagina, hl=m.texto_extraido[:15]) }}" class="text-xs text-primary hover:underline inline-flex items-center gap-1 font-bold">
+                    Localizar no texto →
+                </a>
+            </div>
+            {% else %}
+            <p class="text-gray-600 italic text-sm">Nenhum trecho pintado no PDF.</p>
+            {% endfor %}
+        </div>
+
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,145 @@
+{% extends "admin/base_adm.html" %}
+
+{% block title %}Upload de Livro - SuaEstante{% endblock %}
+{% block breadcrumb %}Minhas Estantes / Novo PDF{% endblock %}
+
+{% block dashboard_content %}
+<div class="max-w-3xl mx-auto">
+    <div class="mb-6">
+        <a href="{{ url_for('user.home') }}" class="inline-flex items-center text-sm text-gray-500 hover:text-primary transition-colors gap-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+            Voltar para estantes
+        </a>
+        <h1 class="text-2xl font-bold text-secondary mt-2">Adicionar Novo PDF</h1>
+        <p class="text-sm text-gray-400">O arquivo será armazenado na sua estante selecionada.</p>
+    </div>
+
+    <form action="{{ url_for('user.cadastrar_livro') }}" method="POST" enctype="multipart/form-data" class="space-y-6">
+        
+        <div class="bg-white p-8 rounded-3xl border-2 border-dashed border-gray-200 hover:border-primary transition-all group relative">
+            <input type="file" name="pdf_file" id="pdf_file" accept=".pdf" required 
+                   class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                   onchange="updateFileName(this)">
+            
+            <div class="text-center" id="upload-placeholder">
+                <div class="w-16 h-16 bg-blue-50 text-primary rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
+                </div>
+                <h3 class="text-lg font-bold text-secondary">Clique ou arraste o PDF aqui</h3>
+                <p class="text-sm text-gray-400 mt-1">Apenas arquivos .PDF são permitidos</p>
+            </div>
+
+            <div id="file-info" class="hidden text-center">
+                <div class="w-16 h-16 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                </div>
+                <h3 id="file-name-display" class="text-lg font-bold text-emerald-600 truncate px-4">Nome_do_arquivo.pdf</h3>
+                <button type="button" onclick="resetUpload()" class="text-xs text-red-500 font-bold mt-2 hover:underline">Remover arquivo</button>
+            </div>
+        </div>
+
+        <!-- Campo de Capa do Livro (Novo) -->
+        <div class="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm space-y-4">
+            <label class="text-sm font-bold text-gray-600 ml-1 italic">Capa do Livro (Imagem)</label>
+            
+            <div class="flex items-center gap-4">
+                <div id="capa-preview-container" class="w-24 h-32 bg-gray-50 rounded-xl border-2 border-dashed border-gray-200 flex items-center justify-center overflow-hidden">
+                    <svg id="capa-icon" class="w-8 h-8 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                    <img id="capa-preview" class="hidden w-full h-full object-cover">
+                </div>
+                
+                <div class="flex-1">
+                    <input type="file" name="capa_file" id="capa_file" accept="image/*" 
+                           onchange="previewCapa(this)"
+                           class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-bold file:bg-blue-50 file:text-primary hover:file:bg-blue-100">
+                    <p class="text-[10px] text-gray-400 mt-2">Formatos aceitos: JPG, PNG. Recomendado: 600x900px</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white p-8 rounded-3xl border border-gray-100 shadow-sm space-y-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="space-y-2">
+                    <label class="text-sm font-bold text-gray-600 ml-1">Título do Livro</label>
+                    <input type="text" name="titulo" id="titulo" required placeholder="Como ele aparecerá na estante"
+                           class="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-primary focus:bg-white outline-none transition-all">
+                </div>
+
+                <div class="space-y-2">
+                    <label class="text-sm font-bold text-gray-600 ml-1">Selecionar Estante</label>
+                    <div class="relative">
+                        <select name="estante_id" required 
+                                class="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-primary focus:bg-white outline-none transition-all appearance-none">
+                            {% for shelf in shelves %}
+                                <option value="{{ shelf.id }}">{{ shelf.nome }}</option>
+                            {% endfor %}
+                        </select>
+                        <div class="absolute inset-y-0 right-0 flex items-center px-4 pointer-events-none text-gray-400">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-3 p-4 bg-amber-50/50 rounded-2xl border border-amber-100">
+                <input type="checkbox" name="favorito" id="favorito" class="w-5 h-5 text-primary border-gray-300 rounded focus:ring-primary">
+                <label for="favorito" class="text-sm font-bold text-amber-800">Marcar este livro como favorito</label>
+            </div>
+        </div>
+
+        <div class="flex items-center justify-end gap-4 pt-4">
+            <button type="button" onclick="history.back()" class="font-bold text-gray-400 hover:text-gray-600 transition">Cancelar</button>
+            <button type="submit" class="bg-primary hover:bg-blue-600 text-white px-12 py-4 rounded-2xl font-bold shadow-lg shadow-blue-100 transition-all transform active:scale-95 flex items-center gap-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                Finalizar Upload
+            </button>
+        </div>
+    </form>
+</div>
+
+<script>
+    function updateFileName(input) {
+        const placeholder = document.getElementById('upload-placeholder');
+        const fileInfo = document.getElementById('file-info');
+        const nameDisplay = document.getElementById('file-name-display');
+        const tituloInput = document.getElementById('titulo');
+
+        if (input.files && input.files[0]) {
+            const fileName = input.files[0].name;
+            placeholder.classList.add('hidden');
+            fileInfo.classList.remove('hidden');
+            nameDisplay.textContent = fileName;
+            
+            // Sugestão automática: Se o título estiver vazio, coloca o nome do arquivo (sem o .pdf)
+            if (tituloInput.value === "") {
+                tituloInput.value = fileName.replace(/\.[^/.]+$/, "");
+            }
+        }
+    }
+
+    function previewCapa(input) {
+        const preview = document.getElementById('capa-preview');
+        const icon = document.getElementById('capa-icon');
+        
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                preview.src = e.target.result;
+                preview.classList.remove('hidden');
+                icon.classList.add('hidden');
+            }
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    function resetUpload() {
+        const input = document.getElementById('pdf_file');
+        const placeholder = document.getElementById('upload-placeholder');
+        const fileInfo = document.getElementById('file-info');
+        
+        input.value = "";
+        placeholder.classList.remove('hidden');
+        fileInfo.classList.add('hidden');
+    }
+</script>
+{% endblock %}

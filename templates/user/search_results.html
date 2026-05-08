@@ -1,0 +1,156 @@
+{% extends "admin/base_adm.html" %}
+
+{% block title %}Pesquisa Inteligente - SuaEstante{% endblock %}
+{% block breadcrumb %}Início / Pesquisa Inteligente{% endblock %}
+
+{% block dashboard_content %}
+
+<!-- Overlay de Carregamento (Invisível por padrão) -->
+<div id="loading-overlay" class="hidden fixed inset-0 z-[200] bg-secondary/80 backdrop-blur-md flex flex-col items-center justify-center text-white transition-all duration-300">
+    <div class="relative">
+        <div class="w-24 h-24 border-4 border-white/20 border-t-primary rounded-full animate-spin"></div>
+        <svg class="w-10 h-10 text-white absolute inset-0 m-auto animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+        </svg>
+    </div>
+    <h2 class="mt-8 text-2xl font-bold tracking-tight">Pesquisa Inteligente</h2>
+    <p id="loading-text" class="text-white/70 text-lg mt-2 font-medium h-6">Analisando sua biblioteca...</p>
+</div>
+
+<div class="max-w-5xl mx-auto space-y-8">
+    <!-- Bloco de Busca -->
+    <div class="bg-white p-8 rounded-3xl border border-gray-100 shadow-sm">
+        <h1 class="text-2xl font-bold text-secondary mb-4">Pesquisa Inteligente</h1>
+        <form id="search-form" action="{{ url_for('user.pesquisa_inteligente') }}" method="GET" class="space-y-4">
+            <div class="relative">
+                <input type="text" name="q" value="{{ query }}" required minlength="3" placeholder="O que você está procurando exatamente?"
+                        class="w-full pl-14 pr-4 py-4 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-2 focus:ring-primary focus:bg-white outline-none transition-all text-lg">
+                <svg class="w-6 h-6 text-gray-400 absolute left-5 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                </svg>
+            </div>
+
+            <div class="flex flex-col md:flex-row gap-4">
+                <!-- Filtro de Estante -->
+                <div class="flex-1 relative">
+                    <select name="estante_id" class="w-full appearance-none bg-gray-50 border border-gray-100 px-4 py-3 rounded-xl focus:ring-2 focus:ring-primary outline-none text-gray-600 font-medium cursor-pointer">
+                        <option value="todas">🔍 Todas as Estantes</option>
+                        {% for estante in estantes_usuario %}
+                            <option value="{{ estante.id }}" {% if estante_selecionada == estante.id|string %}selected{% endif %}>
+                                📁 {{ estante.nome }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-gray-400">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </div>
+                </div>
+
+                <button type="submit" class="bg-secondary text-white px-10 py-3 rounded-xl font-bold hover:bg-black shadow-lg transition-all active:scale-95 flex items-center justify-center gap-2">
+                    <span>Realizar Busca</span>
+                </button>
+            </div>
+        </form>
+    </div>
+
+    {% if query %}
+    <div class="space-y-6 pb-20">
+        {% for res in resultados %}
+        <div class="bg-white rounded-3xl border border-gray-100 overflow-hidden shadow-sm hover:shadow-md transition-all">
+            <!-- Header do Livro -->
+            <div class="p-6 border-b border-gray-50 flex items-center justify-between bg-gray-50/50">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 bg-primary text-white rounded-xl flex items-center justify-center font-bold shadow-inner">
+                        {{ res.titulo[:1] }}
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-bold text-secondary leading-tight">{{ res.titulo }}</h3>
+                        <p class="text-[10px] text-gray-400 uppercase font-bold tracking-[0.2em] mt-1">{{ res.estante }}</p>
+                    </div>
+                </div>
+                <div class="text-right bg-white px-4 py-2 rounded-2xl border border-gray-100">
+                    <span class="text-2xl font-black text-primary block leading-none">{{ res.total_geral }}</span>
+                    <span class="text-[9px] font-bold text-gray-400 uppercase tracking-tighter">Citações</span>
+                </div>
+            </div>
+
+            <!-- Listagem de Trechos -->
+            <div class="p-6 space-y-4 max-h-[600px] overflow-y-auto custom-scrollbar">
+                {% for det in res.detalhes %}
+                <div class="group p-5 bg-gray-50 rounded-2xl border border-transparent hover:border-primary/20 hover:bg-white transition-all">
+                    <div class="flex items-start gap-4">
+                        <div class="flex flex-col items-center">
+                            <span class="bg-secondary text-white text-[9px] font-bold px-2 py-1 rounded-md whitespace-nowrap">
+                                PÁG {{ det.pagina }}
+                            </span>
+                        </div>
+                        <div class="flex-1">
+                            <p class="text-gray-600 italic leading-relaxed text-sm md:text-base">
+                                {# Marcação visual do termo pesquisado #}
+                                {{ det.trecho | replace(query, '<mark class="bg-yellow-200 text-secondary font-bold px-1 rounded shadow-sm">' + query + '</mark>') | safe }}
+                            </p>
+                        </div>
+                        <a href="{{ url_for('user.ler_livro', id=res.id) }}?page={{ det.pagina }}&hl={{ query }}" 
+                           class="opacity-0 group-hover:opacity-100 p-2 text-primary hover:bg-primary/10 rounded-xl transition-all"
+                           title="Abrir nesta página">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <div class="px-6 py-4 bg-gray-50/30 border-t border-gray-50 flex justify-center">
+                <a href="{{ url_for('user.ler_livro', id=res.id) }}" class="text-xs font-bold text-gray-400 hover:text-primary transition-colors flex items-center gap-2">
+                    VER LIVRO COMPLETO
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+                </a>
+            </div>
+        </div>
+        {% else %}
+        <div class="py-20 text-center bg-white rounded-3xl border border-dashed border-gray-200">
+            <div class="inline-flex p-6 bg-gray-50 rounded-full mb-4">
+                <svg class="w-12 h-12 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+            </div>
+            <p class="text-gray-400 font-medium">Nenhum trecho encontrado com este termo exato.</p>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+</div>
+
+{% endblock %}
+
+{% block js %}
+<script>
+    document.getElementById('search-form').addEventListener('submit', function(e) {
+        // Exibe o loader
+        const overlay = document.getElementById('loading-overlay');
+        overlay.classList.remove('hidden');
+        overlay.classList.add('flex');
+
+        const textElement = document.getElementById('loading-text');
+        const frases = [
+            "Abrindo arquivos da biblioteca...",
+            "Escaneando páginas por termos exatos...",
+            "Filtrando resultados por estante...",
+            "Organizando citações encontradas...",
+            "Quase pronto, carregando trechos..."
+        ];
+
+        let i = 0;
+        setInterval(() => {
+            i = (i + 1) % frases.length;
+            textElement.classList.add('opacity-0', '-translate-y-2');
+            
+            setTimeout(() => {
+                textElement.innerText = frases[i];
+                textElement.classList.remove('opacity-0', '-translate-y-2');
+            }, 400);
+        }, 2500);
+    });
+</script>
+
+{% endblock %}

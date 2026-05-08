@@ -1,0 +1,84 @@
+{% extends "admin/base_adm.html" %}
+
+{% block dashboard_content %}
+<div class="max-w-3xl mx-auto">
+    <div class="bg-white rounded-3xl border border-gray-100 shadow-xl overflow-hidden">
+        
+        <div class="bg-primary p-8 text-white">
+            <h1 class="text-2xl font-bold">Editar Detalhes do Livro</h1>
+            <p class="text-blue-100 text-sm">Atualize as informações de "{{ livro.titulo }}"</p>
+        </div>
+
+        <form action="{{ url_for('user.editar_livro', id=livro.id) }}" method="POST" enctype="multipart/form-data" class="p-8 space-y-6">
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Coluna da Capa -->
+                <div class="space-y-4">
+                    <label class="text-xs font-bold text-gray-500 uppercase tracking-wider">Capa Atual</label>
+                    <div class="relative group aspect-[3/4] rounded-2xl overflow-hidden bg-gray-100 border shadow-inner">
+                        <img id="capa-preview" 
+                             src="{{ url_for('static', filename='uploads/capa_livro/' + (livro.capa or 'default_book.png')) }}" 
+                             class="w-full h-full object-cover">
+                        
+                        <label for="capa_file" class="absolute inset-0 bg-black/60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer">
+                            <span class="text-white text-xs font-bold">Trocar Imagem</span>
+                        </label>
+                        <input type="file" name="capa_file" id="capa_file" class="hidden" accept="image/*" onchange="previewImage(this)">
+                    </div>
+                </div>
+
+                <!-- Coluna dos Dados -->
+                <div class="md:col-span-2 space-y-6">
+                    <div class="space-y-2">
+                        <label class="text-sm font-bold text-gray-600">Título</label>
+                        <input type="text" name="titulo" value="{{ livro.titulo }}" required
+                               class="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-primary outline-none transition-all">
+                    </div>
+
+                    <div class="space-y-2">
+                        <label class="text-sm font-bold text-gray-600">Mover para Estante</label>
+                        <select name="estante_id" class="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-primary outline-none transition-all">
+                            {% for shelf in shelves %}
+                                <option value="{{ shelf.id }}" {% if shelf.id == livro.estante_id %}selected{% endif %}>
+                                    {{ shelf.nome }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="space-y-2">
+                        <label class="text-sm font-bold text-gray-600">Status</label>
+                        <input type="text" name="estado" value="{{ livro.estado }}" required
+                               class="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-primary outline-none transition-all">
+                    </div>
+
+                    <div class="flex items-center gap-3 p-4 bg-amber-50 rounded-2xl border border-amber-100">
+                        <input type="checkbox" name="favorito" id="favorito" {% if livro.favorito %}checked{% endif %}
+                               class="w-5 h-5 text-primary border-gray-300 rounded focus:ring-primary">
+                        <label for="favorito" class="text-sm font-bold text-amber-800">Marcar como favorito</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pt-6 border-t border-gray-50 flex items-center justify-end gap-4">
+                <button type="button" onclick="history.back()" class="text-sm font-bold text-gray-400 hover:text-gray-600">Cancelar</button>
+                <button type="submit" class="bg-secondary text-white px-8 py-3 rounded-xl font-bold hover:bg-black transition-all shadow-lg">
+                    Salvar Alterações
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+function previewImage(input) {
+    if (input.files && input.files[0]) {
+        var reader = new FileReader();
+        reader.onload = function(e) {
+            document.getElementById('capa-preview').src = e.target.result;
+        }
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+</script>
+{% endblock %}
