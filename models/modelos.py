@@ -30,7 +30,6 @@ class Estante(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     
     # Relacionamentos
-    user = db.relationship('User', backref='Estante')
     livros = db.relationship('Livro', backref='estante', lazy=True, cascade="all, delete-orphan")
 
 # Tabela de Livros
