@@ -3,359 +3,794 @@
 {% block title %}Lendo: {{ livro.titulo }}{% endblock %}
 
 {% block dashboard_content %}
+
 <div class="fixed inset-0 z-[100] bg-[#1a1a1a] flex flex-col select-none">
-    
+
+
     <div class="h-16 bg-[#2d2d2d] border-b border-white/10 flex items-center justify-between px-6 text-white">
+
         <div class="flex items-center gap-4">
+
             <a href="javascript:history.back()" class="p-2 hover:bg-white/10 rounded-full transition-colors">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                </svg>
+
             </a>
+
             <h1 class="font-bold text-sm md:text-base truncate max-w-[200px] md:max-w-md">{{ livro.titulo }}</h1>
+
         </div>
+
+
 
         <div class="flex justify-between gap-2">
-            <a  href="{{ url_for('user.caderno_livro', livro_id=livro.id) }}" class="flex items-center gap-2 bg-red-500/20 hover:bg-red-500/30 text-red-500 px-4 py-2 rounded-xl text-xs font-bold transition-all border border-yellow-500/20" title="Caderno de Anotações">
-                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+
+            <a href="{{ url_for('user.caderno_livro', livro_id=livro.id) }}"
+                class="flex items-center gap-2 bg-red-500/20 hover:bg-red-500/30 text-red-500 px-4 py-2 rounded-xl text-xs font-bold transition-all border border-yellow-500/20"
+                title="Caderno de Anotações">
+
+                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253">
+                    </path>
+                </svg>
+
                 Caderno de Anotação
+
             </a>
 
-            <button onclick="openAnnotationModal()" class="flex items-center gap-2 bg-yellow-500/20 hover:bg-yellow-500/30 text-yellow-500 px-4 py-2 rounded-xl text-xs font-bold transition-all border border-yellow-500/20">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+
+
+            <button onclick="openAnnotationModal()"
+                class="flex items-center gap-2 bg-yellow-500/20 hover:bg-yellow-500/30 text-yellow-500 px-4 py-2 rounded-xl text-xs font-bold transition-all border border-yellow-500/20">
+
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z">
+                    </path>
+                </svg>
+
                 Anotar Insight
+
             </button>
+
         </div>
+
+
 
         <div class="flex items-center gap-4">
+
             <div class="flex items-center bg-black/20 rounded-xl p-1 border border-white/5">
-                <button onclick="changeZoom(-0.2)" class="p-2 hover:text-primary transition-colors" title="Diminuir Zoom">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"></path></svg>
+
+                <button onclick="changeZoom(-0.2)" class="p-2 hover:text-primary transition-colors"
+                    title="Diminuir Zoom">
+
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"></path>
+                    </svg>
+
                 </button>
+
                 <span id="zoom-percent" class="text-[10px] font-mono w-12 text-center text-gray-400">130%</span>
-                <button onclick="changeZoom(0.2)" class="p-2 hover:text-primary transition-colors" title="Aumentar Zoom">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+
+                <button onclick="changeZoom(0.2)" class="p-2 hover:text-primary transition-colors"
+                    title="Aumentar Zoom">
+
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                    </svg>
+
                 </button>
+
             </div>
+
+
 
             <div class="flex items-center gap-2 bg-black/20 px-3 py-1.5 rounded-xl border border-white/5">
+
                 <button id="prev-page" class="hover:text-primary transition-colors p-1">
-                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"></path></svg>
+
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                        <path
+                            d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z">
+                        </path>
+                    </svg>
+
                 </button>
+
                 <span class="text-xs font-mono min-w-[60px] text-center">
-                    <span id="page-num" class="text-primary font-bold">1</span> / <span id="page-count" class="text-gray-500">-</span>
+
+                    <span id="page-num" class="text-primary font-bold">1</span> / <span id="page-count"
+                        class="text-gray-500">-</span>
+
                 </span>
+
                 <button id="next-page" class="hover:text-primary transition-colors p-1">
-                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"></path></svg>
+
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                        <path
+                            d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z">
+                        </path>
+                    </svg>
+
                 </button>
+
             </div>
 
-            <button onclick="salvarAnotacoesManuais()" class="hidden md:block bg-primary hover:bg-blue-600 text-white px-5 py-2 rounded-xl text-xs font-bold shadow-lg shadow-blue-500/20 transition-all">
+
+
+            <button onclick="salvarAnotacoesManuais()"
+                class="hidden md:block bg-primary hover:bg-blue-600 text-white px-5 py-2 rounded-xl text-xs font-bold shadow-lg shadow-blue-500/20 transition-all">
+
                 Salvar Notas
+
             </button>
+
         </div>
+
     </div>
+
+
 
     <!-- Estrutura do Modal (Fica escondido por padrão) -->
-    <div id="annotation-modal" class="fixed inset-0 z-[200] hidden bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-        <div class="bg-[#2d2d2d] w-full max-w-md rounded-2xl shadow-2xl border border-white/10 overflow-hidden">
-            <div class="p-6 border-b border-white/5 flex justify-between items-center">
-                <h3 class="text-white font-bold">Novo Insight</h3>
-                <button onclick="closeAnnotationModal()" class="text-gray-400 hover:text-white">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-                </button>
-            </div>
-            <div class="p-6">
-                <textarea id="annotation-content" rows="5" 
-                    class="w-full bg-black/20 border border-white/10 rounded-xl p-4 text-white text-sm focus:ring-2 focus:ring-primary focus:outline-none placeholder-gray-600"
-                    placeholder="Escreva sua reflexão sobre este trecho ou capítulo..."></textarea>
-                
-                <div class="mt-6 flex gap-3">
-                    <button onclick="closeAnnotationModal()" class="flex-1 px-4 py-3 text-gray-400 hover:text-white text-sm font-bold transition-colors">Cancelar</button>
-                    <button onclick="salvarAnotacaoTexto()" class="flex-1 bg-primary hover:bg-blue-600 text-white px-4 py-3 rounded-xl text-sm font-bold shadow-lg transition-all">
-                        Salvar no Caderno
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
+    {% include 'includes/modal_anotacao.html' %}
+    {% include 'includes/ia_modal.html' %}
+
 
     <div class="flex-1 flex overflow-hidden">
+
         <div class="w-16 bg-[#252525] border-r border-white/5 flex flex-col items-center py-8 gap-6 shadow-xl">
-           
-            
-            <button onclick="setTool('pen', '#3b82f6')" id="btn-blue" class="tool-btn p-3 text-blue-500 bg-blue-500/10 rounded-2xl border border-blue-500/20 transition-all active-tool">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
+            <button onclick="abrirModalIntervalo()" 
+                    title="Processar com IA"
+                    class="flex items-center justify-center p-2 bg-primary/10 hover:bg-primary/20 text-primary rounded-lg transition-all border border-primary/20 group">
+                <!-- Ícone de Robô/IA -->
+                <svg class="w-5 h-5 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"></path>
+                </svg>
             </button>
-            
-            <button onclick="setTool('pen', '#fbbf24')" class="w-8 h-8 rounded-full bg-yellow-400 border-2 border-white/10 hover:scale-110 transition-transform shadow-lg"></button>
-            <button onclick="setTool('pen', '#4ade80')" class="w-8 h-8 rounded-full bg-green-400 border-2 border-white/10 hover:scale-110 transition-transform shadow-lg"></button>
-            
+
+            <!-- Botão da Seta (Cursor) -->
+            <button onclick="setTool('cursor', null)" id="btn-cursor"
+                class="tool-btn p-3 text-gray-400 hover:text-white rounded-2xl border border-transparent transition-all">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5"></path>
+                </svg>
+            </button>
+
+            <button onclick="setTool('pen', '#3b82f6')" id="btn-blue"
+                class="tool-btn p-3 text-blue-500 bg-blue-500/10 rounded-2xl border border-blue-500/20 transition-all active-tool">
+
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z">
+                    </path>
+                </svg>
+
+            </button>
+
+
+            <button onclick="setTool('pen', '#fbbf24')"
+                class="w-8 h-8 rounded-full bg-yellow-400 border-2 border-white/10 hover:scale-110 transition-transform shadow-lg"></button>
+
+            <button onclick="setTool('pen', '#4ade80')"
+                class="w-8 h-8 rounded-full bg-green-400 border-2 border-white/10 hover:scale-110 transition-transform shadow-lg"></button>
+
+
             <div class="w-8 h-px bg-white/5 my-2"></div>
-            
-            <button onclick="clearCanvas()" title="Limpar página" class="p-3 text-white/20 hover:text-red-500 hover:bg-red-500/10 rounded-2xl transition-all">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+
+
+            <button onclick="clearCanvas()" title="Limpar página"
+                class="p-3 text-white/20 hover:text-red-500 hover:bg-red-500/10 rounded-2xl transition-all">
+
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
+                    </path>
+                </svg>
+
             </button>
+
         </div>
 
-        <div id="viewer-scroll" class="flex-1 overflow-auto bg-[#131313] p-4 md:p-12 flex justify-center custom-scrollbar scroll-smooth">
+
+
+        <div id="viewer-scroll"
+            class="flex-1 overflow-auto bg-[#131313] p-4 md:p-12 flex justify-center custom-scrollbar scroll-smooth">
+
             <div class="relative shadow-[0_0_50px_rgba(0,0,0,0.5)]">
+
                 <canvas id="pdf-render" class="rounded-sm cursor-crosshair block"></canvas>
+                <div id="text-layer" class="textLayer absolute inset-0 pointer-events-none"></div>
             </div>
+
         </div>
+
     </div>
+
 </div>
+
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
 
+
+
 <script>
-  const url = "{{ url_for('static', filename='uploads/livros/' + livro.arquivo_path) }}";
-    
+    // Define o worker explicitamente para evitar o aviso
+    //pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+
+    const url = "{{ url_for('static', filename='uploads/livros/' + livro.arquivo_path) }}";
+
+
     // --- VARIÁVEIS DE ESTADO (BLINDADAS) ---
+
     // Usamos Number() e verificações de string para evitar que o JS quebre
+
     const highlightTerm = "{{ highlight | default('') }}".trim();
+
     const startPageFromUrl = Number("{{ start_page | default(1) }}");
+
     const pageFromProgress = Number("{{ livro.progresso.ultima_pagina if livro.progresso else 1 }}");
 
+
+
     // LÓGICA DE PRIORIDADE: Se veio da busca (hl), manda a página da busca.
+
     let pageNum = (highlightTerm !== "") ? startPageFromUrl : pageFromProgress;
 
+
+
     let pdfDoc = null,
+
         pageIsRendering = false,
+
         pageNumIsPending = null,
+
         scale = 1.3,
+
         isDrawing = false,
+
         currentColor = '#3b82f6',
+
         currentPathPoints = [];
 
+
+
     // Captura as marcações vindas do banco
+
     const marcacoesExistentes = {{ marcacoes_existentes | tojson | safe }};
 
+
+
     const canvas = document.querySelector('#pdf-render');
+
     const ctx = canvas.getContext('2d');
+
+
 
     // --- RENDERIZAÇÃO ---
 
+
+
     const renderPage = num => {
+
         if (!pdfDoc) return;
+
         pageIsRendering = true;
-        
+
+
         pdfDoc.getPage(num).then(page => {
+
             const viewport = page.getViewport({ scale: scale });
+
             canvas.height = viewport.height;
+
             canvas.width = viewport.width;
 
+
+
             const renderCtx = {
+
                 canvasContext: ctx,
+
                 viewport: viewport
+
             };
-            
+
+
             const renderTask = page.render(renderCtx);
-            
+
+
             renderTask.promise.then(async () => {
+
                 // 1. Renderiza marcações fixas do banco
+
                 await renderMarcacoesGuardadas(page, viewport);
 
+
+
                 // 2. Renderiza destaque da pesquisa inteligente (HL)
+
                 if (highlightTerm !== "") {
+
                     await applyHighlight(page, viewport);
+
                 }
+
+
 
                 pageIsRendering = false;
+
                 if (pageNumIsPending !== null) {
+
                     renderPage(pageNumIsPending);
+
                     pageNumIsPending = null;
+
                 }
+
             });
 
+
+
             document.querySelector('#page-num').textContent = num;
+
         });
+
     };
 
+
+
     const queueRenderPage = num => {
+
         if (pageIsRendering) {
+
             pageNumIsPending = num;
+
         } else {
+
             renderPage(num);
+
         }
+
         persistirProgresso();
+
     };
+
+
 
     // --- DESTAQUES E MARCAÇÕES ---
 
+
+
     async function applyHighlight(page, viewport) {
+
         try {
+
             const textContent = await page.getTextContent();
+
             const searchLow = highlightTerm.toLowerCase();
+
             ctx.save();
+
             textContent.items.forEach(item => {
+
                 if (item.str.toLowerCase().includes(searchLow)) {
+
                     const tx = pdfjsLib.Util.transform(viewport.transform, item.transform);
+
                     ctx.fillStyle = "rgba(255, 255, 0, 0.6)"; // Amarelo
+
                     ctx.fillRect(tx[4], tx[5] - (item.height * scale), item.width * scale, item.height * scale);
+
                 }
+
             });
+
             ctx.restore();
+
         } catch (e) { console.error("Erro no HL:", e); }
+
     }
+
+
 
     async function renderMarcacoesGuardadas(page, viewport) {
+
         const marcacoesPagina = marcacoesExistentes.filter(m => Number(m.pagina) === pageNum);
+
         if (marcacoesPagina.length === 0) return;
 
+
+
         try {
+
             const textContent = await page.getTextContent();
+
             ctx.save();
+
             marcacoesPagina.forEach(marcacao => {
+
                 const textoBusca = marcacao.texto.toLowerCase();
+
                 textContent.items.forEach(item => {
+
                     if (item.str.trim() !== "" && textoBusca.includes(item.str.toLowerCase())) {
+
                         const tx = pdfjsLib.Util.transform(viewport.transform, item.transform);
+
                         ctx.fillStyle = hexToRgba(marcacao.cor, 0.3);
+
                         ctx.fillRect(tx[4], tx[5] - (item.height * scale), item.width * scale, item.height * scale);
+
                     }
+
                 });
+
             });
+
             ctx.restore();
+
         } catch (e) { console.error("Erro nas marcações:", e); }
+
     }
+
+
 
     // Handlers de Desenho
-    canvas.addEventListener('mousedown', e => { 
-        isDrawing = true; currentPathPoints = []; 
-        const pos = getMousePos(e); ctx.beginPath(); ctx.moveTo(pos.x, pos.y); 
+
+    canvas.addEventListener('mousedown', e => {
+
+        isDrawing = true; currentPathPoints = [];
+
+        const pos = getMousePos(e); ctx.beginPath(); ctx.moveTo(pos.x, pos.y);
+
     });
+
+
 
     canvas.addEventListener('mousemove', e => {
+
         if (!isDrawing) return;
+
         const pos = getMousePos(e);
+
         ctx.lineTo(pos.x, pos.y);
+
         ctx.strokeStyle = currentColor; ctx.lineWidth = 15; ctx.globalAlpha = 0.4; ctx.stroke();
+
         currentPathPoints.push(pos);
+
     });
+
     canvas.addEventListener('mouseup', () => isDrawing = false);
 
+
+
     function getMousePos(e) {
+
         const rect = canvas.getBoundingClientRect();
+
         return {
+
             x: (e.clientX - rect.left) * (canvas.width / rect.width),
+
             y: (e.clientY - rect.top) * (canvas.height / rect.height)
+
         };
+
     }
+
+
 
     function clearCanvas() {
+
         // Resetar o array de pontos para o backend não salvar nada vazio
+
         currentPathPoints = [];
-        
+
+
         // Re-renderizar a página limpa (isso remove o desenho do canvas)
+
         renderPage(pageNum);
-        
+
+
         console.log("Canvas visual limpo.");
+
     }
 
+
+
+    let currentTool = 'pen'; // Estado inicial
+
+    // 1. Modifique sua função setTool para gerenciar a seta
     function setTool(tool, color) {
-        // 1. Atualiza a cor global do "lápis"
+        currentTool = tool;
         currentColor = color;
 
-        // 2. Remove a classe de destaque de todos os botões de ferramenta
         document.querySelectorAll('.tool-btn, .rounded-full').forEach(btn => {
             btn.classList.remove('active-tool', 'border-white', 'scale-110');
             btn.style.boxShadow = 'none';
         });
 
-        // 3. Adiciona destaque visual ao botão clicado
         const activeBtn = event.currentTarget;
         activeBtn.classList.add('active-tool');
-        
-        // Se for um botão de cor redonda, adiciona uma borda e sombra para destacar
-        if (activeBtn.classList.contains('rounded-full')) {
-            activeBtn.classList.add('border-white', 'scale-110');
-            activeBtn.style.boxShadow = `0 0 15px ${color}66`; // Sombra suave da cor escolhida
+
+        if (tool === 'cursor') {
+            canvas.style.cursor = 'default';
+            document.getElementById('text-layer').style.pointerEvents = 'auto'; // Habilita seleção
+        } else {
+            canvas.style.cursor = 'crosshair';
+            document.getElementById('text-layer').style.pointerEvents = 'none'; // Desabilita para poder desenhar
         }
     }
+
+
 
     // --- UTILITÁRIOS ---
 
+
+
     function hexToRgba(hex, alpha) {
+
         if (!hex || typeof hex !== 'string') return `rgba(59, 130, 246, ${alpha})`;
+
         let r = 0, g = 0, b = 0;
+
         if (hex.length == 4) {
+
             r = "0x" + hex[1] + hex[1]; g = "0x" + hex[2] + hex[2]; b = "0x" + hex[3] + hex[3];
+
         } else if (hex.length == 7) {
+
             r = "0x" + hex[1] + hex[2]; g = "0x" + hex[3] + hex[4]; b = "0x" + hex[5] + hex[6];
+
         }
+
         return `rgba(${parseInt(r)},${parseInt(g)},${parseInt(b)},${alpha})`;
+
     }
 
+
+
     function persistirProgresso() {
+
         fetch(`/user/salvar-progresso/{{ livro.id }}`, {
+
             method: 'POST',
+
             headers: { 'Content-Type': 'application/json' },
+
             body: JSON.stringify({ pagina: pageNum, total: pdfDoc ? pdfDoc.numPages : 0 })
+
         });
+
     }
+
+
 
     // --- CARREGAMENTO INICIAL ---
 
+
+
     pdfjsLib.getDocument(url).promise.then(pdf => {
+
         pdfDoc = pdf;
+
         document.querySelector('#page-count').textContent = pdf.numPages;
+
         // Validação final de página
+
         if (pageNum > pdf.numPages) pageNum = 1;
+
         renderPage(pageNum);
+
     }).catch(err => {
+
         console.error("Erro ao abrir PDF:", err);
+
         alert("Erro ao carregar o arquivo PDF.");
+
     });
 
+
+
     // Funções de Zoom e Navegação (mantenha as mesmas que você já tem)
+
     function changeZoom(d) { scale = Math.min(Math.max(scale + d, 0.5), 3); queueRenderPage(pageNum); }
+
     document.querySelector('#prev-page').addEventListener('click', () => { if (pageNum > 1) { pageNum--; queueRenderPage(pageNum); } });
+
     document.querySelector('#next-page').addEventListener('click', () => { if (pageNum < pdfDoc.numPages) { pageNum++; queueRenderPage(pageNum); } });
 
-   function openAnnotationModal() {
+
+
+    function openAnnotationModal() {
+
         document.getElementById('annotation-modal').classList.remove('hidden');
+
         document.getElementById('annotation-content').focus();
+
     }
 
-   function closeAnnotationModal() {
+
+
+    function closeAnnotationModal() {
+
         document.getElementById('annotation-modal').classList.add('hidden');
+
         document.getElementById('annotation-content').value = '';
+
     }
+
+
 
     async function salvarAnotacaoTexto() {
+
         const conteudo = document.getElementById('annotation-content').value;
-        
+
+
         if (!conteudo.trim()) {
+
             alert("O conteúdo da anotação não pode estar vazio.");
+
+            return;
+
+        }
+
+
+
+        try {
+
+            const response = await fetch("{{ url_for('user.salvar_anotacao', livro_id=livro.id) }}", {
+
+                method: 'POST',
+
+                headers: { 'Content-Type': 'application/json' },
+
+                body: JSON.stringify({ conteudo: conteudo })
+
+            });
+
+
+
+            if (response.ok) {
+
+                alert("Anotação salva com sucesso!");
+
+                closeAnnotationModal();
+
+            } else {
+
+                alert("Erro ao salvar anotação.");
+
+            }
+
+        } catch (error) {
+
+            console.error("Erro:", error);
+
+            alert("Erro de conexão com o servidor.");
+
+        }
+
+    }
+
+
+        // 3. Função para disparar o POST para sua rota Python
+    function abrirModalIntervalo() {
+        // Sugere a página atual como inicial e final por padrão
+        document.getElementById('pag-inicio').value = pageNum;
+        document.getElementById('pag-fim').value = pageNum;
+        document.getElementById('modal-intervalo').classList.remove('hidden');
+    }
+
+    function fecharModalIntervalo() {
+        document.getElementById('modal-intervalo').classList.add('hidden');
+    }
+
+    async function processarComIntervalo(acao) {
+        const pagInicio = document.getElementById('pag-inicio').value;
+        const pagFim = document.getElementById('pag-fim').value;
+        
+        // Validação simples
+        if (!pagInicio || !pagFim || parseInt(pagInicio) > parseInt(pagFim)) {
+            alert("Por favor, insira um intervalo de páginas válido.");
             return;
         }
 
+        fecharModalIntervalo();
+
+        // Reutiliza sua lógica de exibição de resultado
+        const modalResultado = document.getElementById('ai-result-modal');
+        const content = document.getElementById('ai-result-content');
+        
+        modalResultado.classList.remove('hidden');
+        content.innerHTML = '<div class="flex flex-col items-center gap-4 py-8"><div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div><p class="text-sm">A IA está lendo da página ' + pagInicio + ' até a ' + pagFim + '...</p></div>';
+
         try {
-            const response = await fetch("{{ url_for('user.salvar_anotacao', livro_id=livro.id) }}", {
+            const response = await fetch(`/user/livro/ia-action`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ conteudo: conteudo })
+                body: JSON.stringify({
+                    acao: acao,
+                    texto: null, // Não enviamos texto selecionado, enviamos intervalo
+                    livro_id: "{{ livro.id }}",
+                    pag_inicio: pagInicio,
+                    pag_fim: pagFim
+                })
             });
 
-            if (response.ok) {
-                alert("Anotação salva com sucesso!");
-                closeAnnotationModal();
-            } else {
-                alert("Erro ao salvar anotação.");
-            }
+            const data = await response.json();
+            content.innerHTML = data.resultado.replace(/\n/g, '<br>');
         } catch (error) {
-            console.error("Erro:", error);
-            alert("Erro de conexão com o servidor.");
+            content.innerHTML = "Erro ao processar requisição.";
+            console.error(error);
         }
     }
+
+    // Função para fechar o modal de RESULTADO da IA
+    function closeAIModal() {
+        const modal = document.getElementById('ai-result-modal');
+        if (modal) {
+            modal.classList.add('hidden');
+        }
+    }
+
+    // Opcional: Fechar ao clicar fora do conteúdo branco
+    window.onclick = function(event) {
+        const modalResult = document.getElementById('ai-result-modal');
+        const modalIntervalo = document.getElementById('modal-intervalo');
+        
+        if (event.target == modalResult) {
+            closeAIModal();
+        }
+        if (event.target == modalIntervalo) {
+            fecharModalIntervalo();
+        }
+    }
+
 </script>
 
+
+
 <style>
-    body { overflow: hidden; }
-    .custom-scrollbar::-webkit-scrollbar { width: 8px; height: 8px; }
-    .custom-scrollbar::-webkit-scrollbar-track { background: #131313; }
-    .custom-scrollbar::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
-    .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #444; }
-    canvas { background-color: white; }
-    .tool-btn.active-tool { background-color: rgba(59, 130, 246, 0.2); border-color: rgba(59, 130, 246, 0.5); }
+    body {
+        overflow: hidden;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-track {
+        background: #131313;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+        background: #333;
+        border-radius: 10px;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+        background: #444;
+    }
+
+    canvas {
+        background-color: white;
+    }
+
+    .tool-btn.active-tool {
+        background-color: rgba(59, 130, 246, 0.2);
+        border-color: rgba(59, 130, 246, 0.5);
+    }
 </style>
+
+
+
+
 {% endblock %}

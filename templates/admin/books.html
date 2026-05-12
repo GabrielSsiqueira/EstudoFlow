@@ -46,8 +46,8 @@
                         <td class="px-6 py-4">
                             <div class="flex items-center gap-4">
                                 <div class="flex-shrink-0 w-12 h-16 bg-gray-100 rounded-lg overflow-hidden border border-gray-200 shadow-sm">
-                                    {% if book.cover %}
-                                        <img src="{{ url_for('static', filename='uploads/covers/' + book.cover) }}" 
+                                    {% if book.capa %}
+                                        <img src="{{ url_for('static', filename='uploads/capa_livro/' + book.capa) }}" 
                                              class="w-full h-full object-cover">
                                     {% else %}
                                         <div class="w-full h-full flex items-center justify-center text-gray-300">
@@ -56,26 +56,25 @@
                                     {% endif %}
                                 </div>
                                 <div>
-                                    <p class="text-sm font-bold text-secondary group-hover:text-primary transition-colors leading-tight">{{ book.title }}</p>
-                                    <p class="text-xs text-gray-400 mt-1">{{ book.author }}</p>
+                                    <p class="text-sm font-bold text-secondary group-hover:text-primary transition-colors leading-tight">{{ book.titulo }}</p>
                                 </div>
                             </div>
                         </td>
                         <td class="px-6 py-4">
                             <span class="text-xs font-semibold text-gray-600 bg-gray-100 px-2 py-1 rounded-md">
-                                {{ book.category }}
+                                {{ book.estante_id }}
                             </span>
                         </td>
                         <td class="px-6 py-4">
-                            {% if book.available %}
+                            {% if book.estado == 'Ativo' %}
                                 <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-50 text-emerald-600 border border-emerald-100">
                                     <span class="w-1.5 h-1.5 rounded-full bg-emerald-600"></span>
-                                    Disponível
+                                    Ativo
                                 </span>
                             {% else %}
                                 <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-bold bg-orange-50 text-orange-600 border border-orange-100">
                                     <span class="w-1.5 h-1.5 rounded-full bg-orange-600"></span>
-                                    Emprestado
+                                    Inativo
                                 </span>
                             {% endif %}
                         </td>

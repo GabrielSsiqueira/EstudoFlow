@@ -1,0 +1,44 @@
+<div id="modal-intervalo" class="fixed inset-0 z-[10000] hidden bg-black/60 backdrop-blur-sm flex items-center justify-center">
+    <div class="bg-[#1a1a1a] border border-white/10 p-6 rounded-2xl shadow-2xl w-80">
+        <h3 class="text-white font-bold mb-4 flex items-center gap-2">
+            <span class="text-primary">⚡</span> Processar com IA
+        </h3>
+        
+        <div class="space-y-4">
+            <div>
+                <label class="text-[10px] text-gray-400 uppercase font-bold">Página Inicial</label>
+                <input type="number" id="pag-inicio" class="w-full bg-[#252525] border border-white/5 rounded-lg px-3 py-2 text-white outline-none focus:border-primary">
+            </div>
+            <div>
+                <label class="text-[10px] text-gray-400 uppercase font-bold">Página Final</label>
+                <input type="number" id="pag-fim" class="w-full bg-[#252525] border border-white/5 rounded-lg px-3 py-2 text-white outline-none focus:border-primary">
+            </div>
+            
+            <div class="grid grid-cols-1 gap-2 pt-2">
+                <button onclick="processarComIntervalo('resumir')" class="bg-primary hover:bg-primary-dark text-white py-2 rounded-lg text-xs font-bold">Resumir Intervalo</button>
+                <button onclick="processarComIntervalo('explicar')" class="bg-yellow-600 hover:bg-yellow-700 text-white py-2 rounded-lg text-xs font-bold">Explicar Intervalo</button>
+                <button onclick="processarComIntervalo('traduzir')" class="bg-green-600 hover:bg-green-700 text-white py-2 rounded-lg text-xs font-bold">Traduzir Intervalo</button>
+            </div>
+            
+            <button onclick="fecharModalIntervalo()" class="w-full text-gray-500 text-[10px] hover:text-white transition-colors">Cancelar</button>
+        </div>
+    </div>
+</div>
+
+<!-- Este modal PRECISA existir na sua página -->
+<div id="ai-result-modal" class="fixed inset-0 z-[20000] hidden bg-black/70 flex items-center justify-center p-4">
+    <div class="bg-[#1a1a1a] border border-white/10 rounded-2xl w-full max-w-2xl max-h-[80vh] flex flex-col shadow-2xl">
+        <div class="p-4 border-b border-white/5 flex justify-between items-center">
+            <h3 class="text-white font-bold">Resposta da IA</h3>
+            <button onclick="closeAIModal()" class="text-gray-400 hover:text-white">✕</button>
+        </div>
+        <div id="ai-result-content" class="p-6 overflow-y-auto text-gray-300 text-sm leading-relaxed custom-scrollbar">
+            <!-- O conteúdo da IA entra aqui -->
+        </div>
+    </div>
+</div>
+
+
+
+
+

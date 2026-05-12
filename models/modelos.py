@@ -30,6 +30,7 @@ class Estante(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     
     # Relacionamentos
+    user = db.relationship('User', backref='Estante')
     livros = db.relationship('Livro', backref='estante', lazy=True, cascade="all, delete-orphan")
 
 # Tabela de Livros
@@ -78,6 +79,7 @@ class Anotacao(db.Model):
     conteudo = db.Column(db.Text, nullable=False)
     livro_id = db.Column(db.Integer, db.ForeignKey('livros.id'), nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
 
 # Histórico de Acessos
 class Historico(db.Model):

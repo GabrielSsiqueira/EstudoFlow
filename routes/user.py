@@ -7,7 +7,8 @@ from flask import Blueprint, render_template, request, redirect,flash, url_for, 
 from flask_login import login_user, logout_user, login_required, current_user
 from extensions.database import db
 from werkzeug.utils import secure_filename
-from decorador.decorador_adm import admin_required 
+from decorador.decorador_adm import admin_required
+from utils.api_service import processar_texto_com_ai
 from models.modelos import User, Estante, Livro, Progresso, Marcacao, Anotacao
 
 user_bp = Blueprint('user', __name__, url_prefix='/user')
@@ -642,3 +643,46 @@ def atualizar_perfil():
     db.session.commit()
     flash("Perfil atualizado com sucesso!", "success")
     return redirect(url_for('user.perfil'))
+
+@user_bp.route('/livro/ia-action', methods=['POST'])
+@login_required
+def ia_action():
+    try:
+        dados = request.json
+        livro_id = dados.get('livro_id')
+        acao = dados.get('acao')
+        
+        livro = Livro.query.get_or_404(livro_id)
+        # Verifique se este caminho está correto conforme seu projeto
+        caminho_pdf = os.path.join(current_app.config['UPLOAD_FOLDER_LIVRO'], livro.arquivo_path)
+        
+        if not os.path.exists(caminho_pdf):
+            return jsonify({"resultado": "Arquivo PDF não encontrado no servidor."}), 404
+
+        doc = fitz.open(caminho_pdf)
+        
+        # Garante que os números sejam inteiros
+        p_inicio = int(dados.get('pag_inicio', 1))
+        p_fim = int(dados.get('pag_fim', 1))
+        
+        # Ajuste para índices do fitz (0 a n-1)
+        texto_extraido = ""
+        for i in range(p_inicio - 1, p_fim):
+            if i < doc.page_count:
+                texto_extraido += doc[i].get_text()
+        
+        doc.close()
+
+        if not texto_extraido.strip():
+            return jsonify({"resultado": "O intervalo selecionado não possui texto extraível."})
+
+        # CHAME SUA FUNÇÃO DE IA AQUI
+        resultado = processar_texto_com_ai(texto_extraido, acao)
+        
+        return jsonify({"resultado": resultado})
+
+    except Exception as e:
+        # ISSO VAI MOSTRAR O ERRO REAL NO SEU TERMINAL
+        print(f"--- ERRO CRÍTICO NA IA ---")
+        print(e) 
+        return jsonify({"resultado": f"Erro interno: {str(e)}"}), 500

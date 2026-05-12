@@ -1,0 +1,44 @@
+<!-- Estrutura do Modal (Fica escondido por padrão) -->
+
+<div id="annotation-modal" class="fixed inset-0 z-[200] hidden bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+
+    <div class="bg-[#2d2d2d] w-full max-w-md rounded-2xl shadow-2xl border border-white/10 overflow-hidden">
+
+        <div class="p-6 border-b border-white/5 flex justify-between items-center"> 
+
+            <h3 class="text-white font-bold">Novo Insight</h3>
+
+            <button onclick="closeAnnotationModal()" class="text-gray-400 hover:text-white">
+
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+
+            </button>
+
+        </div>
+
+        <div class="p-6">
+
+            <textarea id="annotation-content" rows="5"
+
+            class="w-full bg-black/20 border border-white/10 rounded-xl p-4 text-white text-sm focus:ring-2 focus:ring-primary focus:outline-none placeholder-gray-600"
+
+            placeholder="Escreva sua reflexão sobre este trecho ou capítulo..."></textarea>
+
+
+            <div class="mt-6 flex gap-3">
+
+                <button onclick="closeAnnotationModal()" class="flex-1 px-4 py-3 text-gray-400 hover:text-white text-sm font-bold transition-colors">Cancelar</button>
+
+                <button onclick="salvarAnotacaoTexto()" class="flex-1 bg-primary hover:bg-blue-600 text-white px-4 py-3 rounded-xl text-sm font-bold shadow-lg transition-all">
+
+                Salvar no Caderno
+
+                </button>
+
+           </div>
+
+        </div>
+
+    </div>
+
+</div>

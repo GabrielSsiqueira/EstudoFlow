@@ -25,27 +25,21 @@ def list_users():
 @admin_required
 def list_books():
     books = Livro.query.all()
-    return render_template('admin/books.html', book=books)
+    return render_template('admin/books.html', books=books)
 
 @admin_bp.route('/estantes')
 @admin_required
 def list_estantes():
     shelves = Estante.query.all()
-    return render_template('admin/estante.html', shelf=shelves)
+    return render_template('admin/estante.html', shelves=shelves)
 
-@admin_bp.route('/anotacoes')
-@admin_required
-def list_annotations():
-    # Carrega anotações trazendo junto usuário e livro (otimização de banco)
-    all_notes = Anotacao.query.all() 
-    return render_template('admin/annotations.html', annotations=all_notes)
 
 @admin_bp.route('/historicos')
 @admin_required
 def list_histories():
     # Carrega anotações trazendo junto usuário e livro (otimização de banco)
-    history = Historico.query.all() 
-    return render_template('admin/history.html', log=history)
+    histories = Historico.query.all() 
+    return render_template('admin/history.html', histories=histories)
 
 @admin_bp.route('/users/edit/<int:id>', methods=['GET'])
 @admin_required
